@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% if products_in_cart %}
+                <div class="col-lg-8 col-lg-offset-2">
+                    <h3 class="text-center">Items in cart</h3>
+                    <h3 class="text-center">Total price: {{ request.session.cart.total_amount }} UAH </h3>
+                            {{ request.session.basket.products }}
+                    <form class="form-inline" method="post">{% csrf_token %}
+
+                        <div class="form-group">
+                            <label>Name</label>
+                            <span class="form-error">{{ form.name.errors }}</span>
+                            <input type="text" name="{{ form.name.html_name }}" class="form-control"
+                                value="{{ request.POST.name }}"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <span class="form-error">{{ form.phone.errors }}</span>
+                            <input type="text" name="{{ form.phone.html_name }}" class="form-control"
+                                value="{{ request.POST.phone }}"
+                            >
+                        </div>
+                        <table class="table text-center">
+                            <thead>
+                            <tr>
+                                <th>Item name</th>
+                                <th>Quantity</th>
+                                <th>Price per item</th>
+                                <th>Total price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for product_in_cart in products_in_cart %}
+                                    <tr>
+                                        <td>
+                                            {{ product_in_cart.product.name }}
+                                        </td>
+                                        <td>
+                                            <input value="{{ product_in_cart.nmb }}" type="number"
+                                                   class="product-in-cart-nmb" name="product_in_cart_{{ product_in_cart.id }}">
+                                        </td>
+                                        <td>
+                                            <span class="product-price">
+                                                {{ product_in_cart.price_per_item }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="total-product-in-cart-amount">
+                                                {{ product_in_cart.total_price }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="text-right">
+                            <b>Total</b> <span id="total_order_amount"></span>
+                        </div>
+
+                        <hr>
+
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary btn-lg">Go to checkout</button>
+                        </div>
+                    </form>
+                </div>
+            {% else %}
+                <h3 class="text-center">Your cart is empty</h3>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
